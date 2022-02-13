@@ -1,0 +1,83 @@
+<?php
+	class Utils{
+
+		//Cerrar Session:
+		public static function deleteSession($name){
+			if(isset($_SESSION[$name])){
+				$_SESSION[$name] = null;
+				unset($_SESSION[$name]);
+			}
+			
+			return $name;
+		}
+		
+		
+		//Comprobar Usuario Administrador:
+		public static function isAdmin(){
+			if(!isset($_SESSION['admin'])){
+				header("Location:".base_url);
+			}else{
+				return true;
+			}
+		}
+		
+
+		//Comprobar Identidad Usuario:
+		public static function isIdentity(){
+			if(!isset($_SESSION['identity'])){
+				header("Location:".base_url);
+			}else{
+				return true;
+			}
+		}
+		
+
+		//Mostrar Categorias:
+		public static function showCategorias(){
+			require_once 'models/Categoria.php';
+
+
+			$categoria = new Categoria();
+			$categorias = $categoria->getAll();
+
+			return $categorias;
+		}
+		
+
+		//Inicializacion Del Carrito:
+		public static function statsCarrito(){
+			$stats = array(
+							'count' => 0,
+							'total' => 0
+					 );
+			
+			if(isset($_SESSION['carrito'])){
+				$stats['count'] = count($_SESSION['carrito']);
+				
+				foreach($_SESSION['carrito'] as $producto){
+					$stats['total'] += $producto['precio']*$producto['unidades'];
+				}
+			}
+			
+			return $stats;
+		}
+		
+
+		//Mostrar Estado Producto:
+		public static function showStatus($status){
+			$value = 'Pendiente';
+			
+			if($status == 'confirm'){
+				$value = 'Pendiente';
+			}elseif($status == 'preparation'){
+				$value = 'En preparación';
+			}elseif($status == 'ready'){
+				$value = 'Preparado para enviar';
+			}elseif($status = 'sended'){
+				$value = 'Enviado';
+			}
+			
+			return $value;
+		}
+	}
+?>
